@@ -102,7 +102,7 @@ architecture tb of led_dimmer_tb is
 
     signal clk_in       : std_logic := '0';
     signal button_no_1  : std_logic := '0';
-    signal button_nc_1  : std_logic := '1';  -- not used inside the design; tied off
+    signal button_nc_1  : std_logic := '0';  
 
     signal led_0, led_1, led_2, led_3 : std_logic;
     signal led_4, led_5, led_6, led_7 : std_logic;
@@ -194,16 +194,16 @@ begin
     -- ------------------------------------------------------------
     process
     begin
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 100 ns;   -- let synchronizer/debounce settle in known idle state
 
         -- ============================================================
         -- TEST A: glitch shorter than debounce window -> must be rejected
         -- glitch width = 1 cycle (10 ns), well under (G_DEBOUNCE+1)*10ns = 60 ns
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 10 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 100 ns;   -- observe: btn_debounced / pmod_c_pin_2 must stay '0'
 
         -- ============================================================
@@ -211,77 +211,77 @@ begin
         -- hold 150 ns (15 cycles): long enough to pass debounce (~60-80 ns
         -- round trip) but short of the long-press threshold
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 150 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST C: LONG press -> brightness 2 -> 3
         -- hold 600 ns (60 cycles): well past debounce + LONGPRESS_MAX(30)
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 600 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST D: LONG press -> brightness 3 -> 4
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 600 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST E: LONG press -> brightness hits max(4), direction reverses,
         -- steps to 3
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 600 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST F: LONG press -> brightness 3 -> 2
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 600 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST G: SHORT press -> lamp OFF, brightness frozen at 2
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 150 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST H: LONG press while lamp is OFF -> long_press pulses but
         -- brightness must NOT change (still 2 once lamp comes back on)
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 600 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST I: SHORT press -> lamp ON again, brightness still 2
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 150 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 200 ns;
 
         -- ============================================================
         -- TEST J: hold for 3x LONGPRESS_MAX -> long_press must fire only
         -- ONCE (single tick), not repeatedly, while held
         -- ============================================================
-        button_no_1 <= '1';
+        button_nc_1 <= '1';
         wait for 1500 ns;
-        button_no_1 <= '0';
+        button_nc_1 <= '0';
         wait for 300 ns;
 
         report "t=" & time'image(now) & "  SIMULATION COMPLETE";
