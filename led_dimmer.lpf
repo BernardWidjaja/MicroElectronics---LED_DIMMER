@@ -1,34 +1,32 @@
--- ============================================================
--- LPF Constraint File — One-Key LED Dimmer
--- Target: Lattice XP2-17 (LFXP2-17E, TQFP-208), XP2-17 FPGA Board
--- Maps the exact port names of entity led_dimmer (design.vhd)
--- to the physical FPGA sites listed in the board reference doc.
--- ============================================================
+# ============================================================
+# LPF Constraint File — One-Key LED Dimmer
+# Target: Lattice XP2-17 FPGA Board (TQFP-208)
+# ============================================================
 
--- Global default I/O standard for every pin (per board reference, Sec. 1)
+# ------------------------------------------------------------
+# Global I/O standard
+# All pins on this board use 3.3V LVCMOS logic
+# ------------------------------------------------------------
 IOBUF ALLPORTS IO_TYPE=LVCMOS33;
 
--- ------------------------------------------------------------
--- Clock input
--- 24 MHz on-board oscillator (board reference, Sec. 3)
--- ------------------------------------------------------------
+# ------------------------------------------------------------
+# Clock — 24MHz on-board oscillator
+# ------------------------------------------------------------
 LOCATE COMP "clk_in" SITE "53";
-IOBUF PORT "clk_in" IO_TYPE=LVCMOS33 PULLMODE=NONE;
-FREQUENCY NET "clk_in" 24.000000 MHz;
+FREQUENCY PORT "clk_in" 24.000000 MHz;
 
--- ------------------------------------------------------------
--- Push button S1 (board reference, Sec. 4)
--- button_no_1 = normally-open contact (used by the design)
--- button_nc_1 = normally-closed contact (entity port exists but
---               unused inside the architecture)
--- ------------------------------------------------------------
+# ------------------------------------------------------------
+# Push Button S1
+# We use BOTH contacts for sync + debounce
+# NO contact = Normally Open (not pressed = '0')
+# NC contact = Normally Closed (not pressed = '1')
+# ------------------------------------------------------------
 LOCATE COMP "button_no_1" SITE "17";
 LOCATE COMP "button_nc_1" SITE "18";
 
--- ------------------------------------------------------------
--- LED row — all 8 LEDs driven by the same PWM signal
--- (board reference, Sec. 6)
--- ------------------------------------------------------------
+# ------------------------------------------------------------
+# LEDs — all 8 driven together as one lamp
+# ------------------------------------------------------------
 LOCATE COMP "led_0" SITE "93";
 LOCATE COMP "led_1" SITE "94";
 LOCATE COMP "led_2" SITE "97";
@@ -38,11 +36,9 @@ LOCATE COMP "led_5" SITE "102";
 LOCATE COMP "led_6" SITE "103";
 LOCATE COMP "led_7" SITE "104";
 
--- ------------------------------------------------------------
--- 7-Segment Display — LEFT digit (lamp on/off indicator)
--- (board reference, Sec. 7 — "Left digit FPGA site" column)
--- dp is not used by this design and is left unconnected.
--- ------------------------------------------------------------
+# ------------------------------------------------------------
+# Left 7-segment digit — shows lamp on/off (0 or 1)
+# ------------------------------------------------------------
 LOCATE COMP "seg_left_a" SITE "121";
 LOCATE COMP "seg_left_b" SITE "118";
 LOCATE COMP "seg_left_c" SITE "120";
@@ -51,11 +47,9 @@ LOCATE COMP "seg_left_e" SITE "136";
 LOCATE COMP "seg_left_f" SITE "122";
 LOCATE COMP "seg_left_g" SITE "134";
 
--- ------------------------------------------------------------
--- 7-Segment Display — RIGHT digit (brightness level 0-4)
--- (board reference, Sec. 7 — "Right digit FPGA site" column)
--- dp is not used by this design and is left unconnected.
--- ------------------------------------------------------------
+# ------------------------------------------------------------
+# Right 7-segment digit — shows brightness level (0 to 4)
+# ------------------------------------------------------------
 LOCATE COMP "seg_right_a" SITE "111";
 LOCATE COMP "seg_right_b" SITE "106";
 LOCATE COMP "seg_right_c" SITE "110";
@@ -64,12 +58,13 @@ LOCATE COMP "seg_right_e" SITE "115";
 LOCATE COMP "seg_right_f" SITE "112";
 LOCATE COMP "seg_right_g" SITE "114";
 
--- ------------------------------------------------------------
--- PMOD C connector — oscilloscope-observable debug outputs
--- (board reference, Sec. 10 / Connectivity table)
--- pin 1: pwm_out          pin 2: btn_debounced
--- pin 3: short_press      pin 4: long_press
--- ------------------------------------------------------------
+# ------------------------------------------------------------
+# PMOD Connector — oscilloscope observation signals
+# Pin 1: PWM output       (see duty cycle at ~23.4kHz)
+# Pin 2: debounced button (clean signal, no bounce)
+# Pin 3: short press      (41.7ns pulse on tap)
+# Pin 4: long press       (41.7ns pulse at 500ms mark)
+# ------------------------------------------------------------
 LOCATE COMP "pmod_c_pin_1" SITE "72";
 LOCATE COMP "pmod_c_pin_2" SITE "68";
 LOCATE COMP "pmod_c_pin_3" SITE "66";
