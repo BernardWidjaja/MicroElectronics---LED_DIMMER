@@ -110,7 +110,7 @@ begin
   process(clk_in)
   begin
       if rising_edge(clk_in) then
-          btn_sync_0 <= button_no_1;
+          btn_sync_0 <= button_nc_1;
           btn_sync_1 <= btn_sync_0;
       end if;
   end process;
@@ -340,14 +340,14 @@ begin
  ----- Wiring outputs to pins; connect internal signals to physical output ports
  
  -- LEDs: all 8 get the same PWM signal
- led_0 <= pwm_out;
- led_1 <= pwm_out;
- led_2 <= pwm_out;
- led_3 <= pwm_out;
- led_4 <= pwm_out;
- led_5 <= pwm_out;
- led_6 <= pwm_out;
- led_7 <= pwm_out;
+ led_0 <= not pwm_out;
+ led_1 <= not pwm_out;
+ led_2 <= not pwm_out;
+ led_3 <= not pwm_out;
+ led_4 <= not pwm_out;
+ led_5 <= not pwm_out;
+ led_6 <= not pwm_out;
+ led_7 <= not pwm_out;
  
  -- Left 7-segment digit
  seg_left_a <= seg_left_a_sig;
